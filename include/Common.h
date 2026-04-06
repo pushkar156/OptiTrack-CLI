@@ -43,14 +43,14 @@ namespace UI {
     }
 
     inline void printSuccess(const std::string& msg) {
-        std::cout << BOLD << GREEN << " ✔ [SUCCESS] " << RESET << msg << std::endl;
+        std::cout << BOLD << GREEN << " [OK] " << RESET << msg << std::endl;
     }
 
     inline void printError(const std::string& msg) {
-        std::cout << BOLD << RED << " ✘ [ERROR]   " << RESET << msg << std::endl;
+        std::cout << BOLD << RED << " [!]  " << RESET << msg << std::endl;
     }
 
     inline void printInfo(const std::string& msg) {
-        std::cout << BOLD << YELLOW << " ℹ [INFO]    " << RESET << msg << std::endl;
+        std::cout << BOLD << YELLOW << " [i]  " << RESET << msg << std::endl;
     }
 }

@@ -1,6 +1,11 @@
 #include "MenuSystem.h"
 
 int main() {
+    // 0. Force Standard ASCII Code Page for Windows
+#ifdef _WIN32
+    std::system("chcp 437 > nul");
+#endif
+
     // 1. Initialize the UI System
     MenuSystem app;
 
