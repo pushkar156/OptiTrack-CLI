@@ -53,6 +53,7 @@ private:
 
     void showMainMenu() {
         while (true) {
+            UI::clearScreen();
             UI::printHeader(currentRole + " Main Menu");
             UI::printBox("ACTIVE SECTIONS");
             std::cout << UI::BOLD << "  1. " << UI::RESET << "View Stock Inventory" << std::endl;

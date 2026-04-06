@@ -40,7 +40,20 @@ public:
     }
 
     void loadOrders() {
-        // Logic to load order history if needed
+        auto lines = FileManager::loadFromFile("Orders.csv");
+        for (const auto& line : lines) {
+            std::stringstream ss(line);
+            std::string item;
+            std::vector<std::string> tokens;
+            while(std::getline(ss, item, ',')) tokens.push_back(item);
+
+            if (tokens.size() >= 5) {
+                orderHistory.push_back(std::make_unique<Order>(
+                    std::stoi(tokens[0]), tokens[1], std::stoi(tokens[2]), 
+                    std::stoi(tokens[3]), std::stod(tokens[4])));
+            }
+        }
+        UI::printInfo("Loaded " + std::to_string(orderHistory.size()) + " previous transactions.");
     }
 
     void saveOrders() {
