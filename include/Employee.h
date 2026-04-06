@@ -46,4 +46,15 @@ public:
         int managerID = (manager) ? manager->getID() : -1;
         return std::to_string(id) + "," + ename + "," + role + "," + std::to_string(managerID);
     }
+
+    static Employee fromCSV(const std::string& line) {
+        std::stringstream ss(line);
+        std::string item;
+        std::vector<std::string> tokens;
+        while (std::getline(ss, item, ',')) tokens.push_back(item);
+        if (tokens.size() >= 4) {
+            return Employee(std::stoi(tokens[0]), tokens[1], tokens[2], nullptr); // Manager pointer loaded later
+        }
+        return Employee(0, "", "");
+    }
 };
