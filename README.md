@@ -100,6 +100,18 @@ g++ main.cpp src/Product.cpp -I include -o OptiTrack -std=c++14
 - **Crash Proof**: Ruggedized with `InputValidator` to ignore invalid terminal input.
 - **Memory Safe**: Utilizes `std::unique_ptr` for automated resource cleanup.
 
+## ✍️ Author and Contributors
+
+This project is developed and maintained by:
+
+| Name | GitHub Profile | Role |
+| :--- | :--- | :--- |
+| **Pushkar** | [![GitHub](https://img.shields.io/badge/GitHub-pushkar156-blue?style=flat&logo=github)](https://github.com/pushkar156) | Lead Developer & Architect |
+
 ---
-*Developed for the OOPS Laboratory Project - Second Year B.Tech.*  
-**Author: Pushkar & The Team**
+
+## 🤝 Contributing
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/pushkar156/OptiTrack-CLI/issues).
+
+---
+*Created with 💻 as part of the OOPS Laboratory Project.*
