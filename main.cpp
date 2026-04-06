@@ -1,37 +1,38 @@
 #include "Product.h"
+#include "PerishableProduct.h"
 #include "Employee.h"
-#include "Stocks.h"
-#include "Warehouse.h"
+#include "Order.h"
+#include "InputValidator.h"
 
 int main() {
-    UI::printHeader("OptiTrack Inventory - Test Run");
+    UI::printHeader("OptiTrack Inventory - Phase 2 Test");
 
-    // Test Products
-    UI::printInfo("Testing Product Display:");
-    Product p1(101, "Laptop Pro", "16GB RAM, 512GB SSD", 1200.00);
-    Product p2(102, "Smartphone X", "6.5inch Display, 128GB", 800.00);
-    
+    // 1. Inheritance and Polymorphism Demo
+    UI::printInfo("Testing Inheritance (Perishables):");
+    Product normalProduct(1, "Steel Pipes", "Construction grade", 50.0);
+    PerishableProduct milk(2, "Fresh Milk", "Dairy product", 2.50, "2026-05-01");
+
     std::cout << std::left << std::setw(6) << "ID" 
               << std::setw(20) << "NAME" 
               << std::setw(12) << "PRICE" 
+              << std::setw(15) << "EXPIRY"
               << "DESCRIPTION" << std::endl;
-    p1.displayDetails();
-    p2.displayDetails();
+    normalProduct.displayDetails();
+    milk.displayDetails(); // Calls overridden method
 
-    // Test Employee Hierarchy
-    UI::printHeader("Employee Management Testing");
-    Employee ceo(1, "Alice Johnson", "CEO");
-    Employee mgr(2, "Bob Smith", "Warehouse Manager", &ceo);
-    Employee staff(3, "Charlie Brown", "Stock Staff", &mgr);
+    // 2. Order and Invoicing Demo
+    UI::printHeader("Sales & Invoicing Test");
+    Order sale1(5001, "2026-04-06", 2, 10, 2.50); // Selling 10 units of milk
+    sale1.printInvoice();
 
+    // 3. Employee Hierarchy (Already verified in P1, but kept for context)
+    Employee ceo(1, "Alice", "CEO");
+    Employee mgr(2, "Bob", "Warehouse Manager", &ceo);
     ceo.addSubordinate(&mgr);
-    mgr.setManager(&ceo);
-    mgr.addSubordinate(&staff);
-    staff.setManager(&mgr);
-
-    UI::printInfo("Company Organizational Chart:");
+    
+    UI::printInfo("Quick Hierarchy Check:");
     ceo.displayHierarchy();
 
-    UI::printSuccess("System core components validated!");
+    UI::printSuccess("Phase 2 Core Entities validated successfully!");
     return 0;
 }
