@@ -4,10 +4,10 @@ Product::Product(int id, std::string name, std::string description, double price
 : id(id), pname(name), descrip(description), price(price) {}
 
 void Product::displayDetails() const {
-    std::cout << std::left << std::setw(6) << id 
-              << std::setw(20) << pname 
-              << std::setw(12) << std::fixed << std::setprecision(2) << price 
-              << descrip << std::endl;
+    std::cout << std::left << std::setw(5) << id << "| " 
+              << std::setw(21) << pname << "| " 
+              << std::setw(11) << std::fixed << std::setprecision(2) << price << "| " 
+              << std::setw(30) << descrip << " |" << std::endl;
 }
 
 std::string Product::toCSV() const {
