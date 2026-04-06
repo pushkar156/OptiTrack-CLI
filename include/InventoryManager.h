@@ -5,6 +5,10 @@
 #include "Stocks.h"
 #include "Warehouse.h"
 #include "FileManager.h"
+#include "Provider.h"
+#include <vector>
+#include <memory>
+#include <sstream>
 
 class InventoryManager {
 private:
