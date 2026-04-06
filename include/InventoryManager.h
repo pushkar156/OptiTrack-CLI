@@ -51,13 +51,30 @@ public:
 
     // CRUD Loading & Saving
     void loadAllData() {
-        // Load Products (Simulated logic for demo)
+        // Load Products & Perishables
         auto pLines = FileManager::loadFromFile("Product.csv");
         for (const auto& line : pLines) {
-            products.push_back(std::make_unique<Product>(Product::fromCSV(line)));
+            std::stringstream ss(line);
+            std::string item;
+            std::vector<std::string> tokens;
+            while(std::getline(ss, item, ',')) tokens.push_back(item);
+
+            if (tokens.size() == 5) { // It's a Perishable Product
+                products.push_back(std::make_unique<PerishableProduct>(
+                    std::stoi(tokens[0]), tokens[1], tokens[2], std::stod(tokens[3]), tokens[4]));
+            } else if (tokens.size() == 4) { // Normal Product
+                products.push_back(std::make_unique<Product>(
+                    std::stoi(tokens[0]), tokens[1], tokens[2], std::stod(tokens[3])));
+            }
         }
         
-        UI::printInfo("Loaded " + std::to_string(products.size()) + " products from CSV.");
+        // Load Stocks
+        auto sLines = FileManager::loadFromFile("Stocks.csv");
+        for (const auto& line : sLines) {
+            stocks.push_back(std::make_unique<Stocks>(Stocks::fromCSV(line)));
+        }
+        
+        UI::printInfo("System loaded " + std::to_string(products.size()) + " products and " + std::to_string(stocks.size()) + " stock records.");
     }
 
     void saveAllData() {

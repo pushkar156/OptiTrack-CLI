@@ -54,7 +54,9 @@ public:
         }
 
         // 2. Link them to form the hierarchy
-        for (auto const& [empID, mgrID] : managerMap) {
+        for (auto const& pair : managerMap) {
+            int empID = pair.first;
+            int mgrID = pair.second;
             if (mgrID != -1) {
                 Employee* emp = findEmployeeByID(empID);
                 Employee* mgr = findEmployeeByID(mgrID);
