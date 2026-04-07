@@ -74,15 +74,15 @@ private:
                 std::cout << UI::BOLD << "  2. " << UI::RESET << "POS: Catalog Look-up" << std::endl;
                 std::cout << UI::BOLD << "  3. " << UI::RESET << "POS: Process Transaction" << std::endl;
             } 
+            else if (currentRole == "Warehouse Manager") {
+                std::cout << UI::BOLD << "  2. " << UI::RESET << "Logistics: Update Stock" << std::endl;
+                std::cout << UI::BOLD << "  3. " << UI::RESET << "Warehouse: Low Stock Sentinel" << std::endl;
+            }
             else {
                 if (currentRole == "Admin") {
                     std::cout << UI::BOLD << "  2. " << UI::RESET << "POS: Catalog Look-up" << std::endl;
-                }
-                if (currentRole == "Admin" || currentRole == "Warehouse Manager") {
                     std::cout << UI::BOLD << "  3. " << UI::RESET << "Logistics: Update Stock" << std::endl;
                     std::cout << UI::BOLD << "  4. " << UI::RESET << "Warehouse: Low Stock Sentinel" << std::endl;
-                }
-                if (currentRole == "Admin") {
                     std::cout << UI::BOLD << "  5. " << UI::RESET << "Supply: Provider Records" << std::endl;
                     std::cout << UI::BOLD << "  6. " << UI::RESET << "POS: Process Transaction" << std::endl;
                     std::cout << UI::BOLD << "  7. " << UI::RESET << "Finance: Analytics Report" << std::endl;
@@ -93,7 +93,7 @@ private:
 
             std::cout << UI::BOLD << "  0. " << UI::RESET << UI::RED << "End Secure Session" << UI::RESET << std::endl;
 
-            int maxChoice = (currentRole == "Sales Staff") ? 3 : 9;
+            int maxChoice = (currentRole == "Sales Staff" || currentRole == "Warehouse Manager") ? 3 : 9;
             int choice = InputValidator::getInteger("\n  Execute Action ID: ", 0, maxChoice);
             if (choice == 0) break;
 
@@ -102,8 +102,15 @@ private:
     }
 
     void handleAction(int choice) {
-        // Smart Routing for Sales Staff
-        if (currentRole == "Sales Staff" && choice == 3) choice = 6;
+        // Smart Routing for Staff Roles
+        if (currentRole == "Sales Staff") {
+            if (choice == 2) choice = 2; // Stays search
+            if (choice == 3) choice = 6; // Maps to Sales
+        }
+        else if (currentRole == "Warehouse Manager") {
+            if (choice == 2) choice = 3; // Maps to Update Stock
+            if (choice == 3) choice = 4; // Maps to Low Stock Sentinel
+        }
 
         switch (choice) {
             case 1:
