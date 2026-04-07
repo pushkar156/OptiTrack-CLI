@@ -81,8 +81,8 @@ private:
                 std::cout << UI::BOLD << "  5. " << UI::RESET << "POS: Process Transaction" << std::endl;
             }
             if (currentRole == "Admin") {
-                std::cout << UI::BOLD << "  6. " << UI::RESET << UI::GREEN << "Finance: Analytics Report" << UI::RESET << std::endl;
-                std::cout << UI::BOLD << "  7. " << UI::RESET << UI::CYAN << "Arrival: New Product Entry" << UI::RESET << std::endl;
+                std::cout << UI::BOLD << "  6. " << UI::RESET << "Finance: Analytics Report" << std::endl;
+                std::cout << UI::BOLD << "  7. " << UI::RESET << "Arrival: New Product Entry" << std::endl;
             }
 
             std::cout << UI::BOLD << "  0. " << UI::RESET << UI::RED << "End Secure Session" << UI::RESET << std::endl;
