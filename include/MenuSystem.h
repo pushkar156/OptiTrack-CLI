@@ -83,36 +83,46 @@ private:
         switch (choice) {
             case 1:
                 displayInventory();
-                break;
+                break; // displayInventory has its own pause
             case 2:
                 if (currentRole != "Sales Staff") updateStock();
                 else UI::printError("Access Denied for Sales Staff!");
+                pause();
                 break;
             case 3:
                 if (currentRole == "Admin") staffMgr.displayAll();
                 else UI::printError("Access restricted to Admins only!");
+                pause();
                 break;
             case 5:
                 processSale();
+                pause();
                 break;
             default:
                 UI::printInfo("Feature coming soon in full release!");
+                pause();
         }
+    }
+
+    void pause() {
+        std::cout << UI::YELLOW << "\n  [Press Enter to continue...]" << UI::RESET;
+        std::cin.get();
+        // If there are residual characters, we might need another get if the first one consumes a newline
     }
 
     void displayInventory() {
         UI::clearScreen();
         UI::printHeader("CURRENT STOCK INVENTORY");
-        std::cout << UI::BOLD << UI::BLUE << "+------+----------------------+------------+--------------------------------+" << UI::RESET << std::endl;
-        std::cout << UI::BOLD << UI::BLUE << "| ID   | NAME                 | PRICE ($)  | DESCRIPTION                    |" << UI::RESET << std::endl;
-        std::cout << UI::BOLD << UI::BLUE << "+------+----------------------+------------+--------------------------------+" << UI::RESET << std::endl;
+        std::cout << UI::BOLD << UI::BLUE << "+------+----------------------+-------+------------+--------------------------------+" << UI::RESET << std::endl;
+        std::cout << UI::BOLD << UI::BLUE << "| ID   | NAME                 | STOCK | PRICE ($)  | DESCRIPTION                    |" << UI::RESET << std::endl;
+        std::cout << UI::BOLD << UI::BLUE << "+------+----------------------+-------+------------+--------------------------------+" << UI::RESET << std::endl;
         
         for (const auto& p : invMgr.getProducts()) {
             std::cout << UI::BLUE << "| " << UI::RESET;
             p->displayDetails();
         }
         
-        std::cout << UI::BOLD << UI::BLUE << "+------+----------------------+------------+--------------------------------+" << UI::RESET << std::endl;
+        std::cout << UI::BOLD << UI::BLUE << "+------+----------------------+-------+------------+--------------------------------+" << UI::RESET << std::endl;
         UI::printInfo("Total items: " + std::to_string(invMgr.getProducts().size()));
         std::cout << "\n  [Press Enter to return to menu]" << std::endl;
         std::cin.get();

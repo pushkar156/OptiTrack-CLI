@@ -36,13 +36,10 @@ public:
     bool updateStock(int pID, int wID, int qtyChange) {
         for (const auto& s : stocks) {
             if (s->getProductID() == pID && s->getWarehouseID() == wID) {
-                if (qtyChange < 0) {
-                    if (s->deductStock(-qtyChange)) {
-                        saveAllData();
-                        return true;
-                    }
-                } else {
-                    s->addStock(qtyChange);
+                bool success = (qtyChange < 0) ? s->deductStock(-qtyChange) : (s->addStock(qtyChange), true);
+                if (success) {
+                    Product* p = findProductByID(pID);
+                    if (p) p->setStock(p->getStock() + qtyChange);
                     saveAllData();
                     return true;
                 }
@@ -55,6 +52,9 @@ public:
 
     // CRUD Loading & Saving
     void loadAllData() {
+        products.clear();
+        stocks.clear();
+
         // Load Products & Perishables
         auto pLines = FileManager::loadFromFile("Product.csv");
         for (const auto& line : pLines) {
@@ -63,27 +63,35 @@ public:
             std::vector<std::string> tokens;
             while(std::getline(ss, item, ',')) tokens.push_back(item);
 
-            if (tokens.size() == 5) { // It's a Perishable Product
-                products.push_back(std::make_unique<PerishableProduct>(
-                    std::stoi(tokens[0]), tokens[1], tokens[2], std::stod(tokens[3]), tokens[4]));
-            } else if (tokens.size() == 4) { // Normal Product
-                products.push_back(std::make_unique<Product>(
-                    std::stoi(tokens[0]), tokens[1], tokens[2], std::stod(tokens[3])));
+            if (tokens.size() >= 4) {
+                if (tokens.size() == 5) { // It's a Perishable Product
+                    products.push_back(std::make_unique<PerishableProduct>(
+                        std::stoi(tokens[0]), tokens[1], tokens[2], std::stod(tokens[3]), tokens[4]));
+                } else { // Normal Product
+                    products.push_back(std::make_unique<Product>(
+                        std::stoi(tokens[0]), tokens[1], tokens[2], std::stod(tokens[3])));
+                }
             }
         }
         
-        // Load Stocks
+        // Load Stocks and Sync to Products
         auto sLines = FileManager::loadFromFile("Stocks.csv");
         for (const auto& line : sLines) {
-            stocks.push_back(std::make_unique<Stocks>(Stocks::fromCSV(line)));
+            auto sRec = std::make_unique<Stocks>(Stocks::fromCSV(line));
+            Product* p = findProductByID(sRec->getProductID());
+            if (p) p->setStock(p->getStock() + sRec->getCount());
+            stocks.push_back(std::move(sRec));
         }
         
-        UI::printInfo("System loaded " + std::to_string(products.size()) + " products and " + std::to_string(stocks.size()) + " stock records.");
+        UI::printInfo("System loaded " + std::to_string(products.size()) + " products and synced " + std::to_string(stocks.size()) + " locations.");
     }
 
     void saveAllData() {
-        std::vector<std::string> pLines;
+        std::vector<std::string> pLines, sLines;
         for (const auto& p : products) pLines.push_back(p->toCSV());
+        for (const auto& s : stocks) sLines.push_back(s->toCSV());
+        
         FileManager::saveToFile("Product.csv", pLines);
+        FileManager::saveToFile("Stocks.csv", sLines);
     }
 };
