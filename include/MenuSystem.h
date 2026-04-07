@@ -18,22 +18,29 @@ public:
     void start() {
         while (true) {
             UI::clearScreen();
-            std::cout << UI::BOLD << UI::BLUE << "  ____        _   _ _______                     \n"
-                      << " / __ \\      | | (_)__   __|                    \n"
-                      << "| |  | |_ __ | |_ _   | |_ __ __ _  ___ | | __  \n"
-                      << "| |  | | '_ \\| __| |  | | '__/ _` |/ __|| |/ /  \n"
-                      << "| |__| | |_) | |_| |  | | | | (_| | (__ |   <   \n"
-                      << " \\____/| .__/ \\__|_|  |_|_|  \\__,_|\\___||_|\\_\\ \n"
-                      << "       | |                                      \n"
-                      << "       |_|                                      " << UI::RESET << std::endl;
+            // 1. System Status Bar
+            std::cout << UI::REVERSE << UI::CYAN << "  SYSTEM STATUS: ONLINE  |  V2.2.0  |  SECURITY: [ENCRYPTED]  |  AUTH: [PENDING]  " << UI::RESET << "\n\n";
 
-            UI::printBox("CHOOSE YOUR SECURE ACCESS ROLE");
-            std::cout << UI::BOLD << "  [1] " << UI::RESET << "Admin Login" << std::endl;
-            std::cout << UI::BOLD << "  [2] " << UI::RESET << "Warehouse Manager" << std::endl;
-            std::cout << UI::BOLD << "  [3] " << UI::RESET << "Sales Staff" << std::endl;
-            std::cout << UI::BOLD << "  [0] " << UI::RESET << UI::RED << "Exit System" << UI::RESET << std::endl;
+            // 2. Gradient Logo
+            std::cout << UI::BOLD << UI::BLUE  << "  ____        _   " << UI::CYAN << "_ _______                     \n"
+                      << UI::BLUE  << " / __ \\      | | " << UI::CYAN << "(_)__   __|                    \n"
+                      << UI::BLUE  << "| |  | |_ __ | |_ _   | |_ __ __ _  ___ | | __  \n"
+                      << UI::BLUE  << "| |  | | '_ \\| __| |  | | '__/ _` |/ __|| |/ /  \n"
+                      << UI::BLUE  << "| |__| | |_) | |_| |  | | | | (_| | (__ |   <   \n"
+                      << UI::BLUE  << " \\____/| .__/ \\__|_|  |_|_|  \\__,_|\\___||_|\\_\\ \n"
+                      << UI::BLUE  << "       | |                                      \n"
+                      << UI::BLUE  << "       |_|                                      " << UI::RESET << std::endl;
 
-            int choice = InputValidator::getInteger("\n  Enter ID: ", 0, 3);
+            UI::printBox("CENTRAL LOGISTICS COMMAND");
+            std::cout << UI::BOLD << "  [1] " << UI::RESET << "Secure Admin Login" << std::endl;
+            std::cout << UI::BOLD << "  [2] " << UI::RESET << "Warehouse Logistics Hub" << std::endl;
+            std::cout << UI::BOLD << "  [3] " << UI::RESET << "Point-of-Sale Access" << std::endl;
+            std::cout << UI::BOLD << "  [0] " << UI::RESET << UI::RED << "Shut Down Protocol" << UI::RESET << std::endl;
+
+            // 3. Pulse Footer
+            std::cout << UI::CYAN << "\n  >> DATABASE: STABLE | ITEMS: " << invMgr.getProducts().size() << " | SYNC: ACTIVE" << UI::RESET << std::endl;
+
+            int choice = InputValidator::getInteger("\n  Enter Protocol ID: ", 0, 3);
             if (choice == 0) break;
 
             if (choice == 1) login("Admin");
@@ -54,25 +61,33 @@ private:
     void showMainMenu() {
         while (true) {
             UI::clearScreen();
+            
+            // Role Banner
+            std::cout << UI::REVERSE << UI::CYAN << "  LOGGED IN AS: " << std::left << std::setw(20) << currentRole << " | SESSION: ACTIVE  " << UI::RESET << "\n\n";
+            
             UI::printHeader(currentRole + " Main Menu");
-            UI::printBox("ACTIVE SECTIONS");
-            std::cout << UI::BOLD << "  1. " << UI::RESET << "View Stock Inventory" << std::endl;
+            UI::printBox("ACTIVE DATA SECTIONS");
+            std::cout << UI::BOLD << "  1. " << UI::RESET << "Open Stock Inventory" << std::endl;
             
             // RBAC logic for menu options
             if (currentRole == "Admin" || currentRole == "Warehouse Manager") {
-                std::cout << UI::BOLD << "  2. " << UI::RESET << "Restock / Update Levels" << std::endl;
+                std::cout << UI::BOLD << "  2. " << UI::RESET << "Logistics: Update Stock" << std::endl;
             }
             if (currentRole == "Admin") {
-                std::cout << UI::BOLD << "  3. " << UI::RESET << "HR: Management Hierarchy" << std::endl;
-                std::cout << UI::BOLD << "  4. " << UI::RESET << "Supply Chain: Providers" << std::endl;
+                std::cout << UI::BOLD << "  3. " << UI::RESET << "HR: Staff Hierarchy" << std::endl;
+                std::cout << UI::BOLD << "  4. " << UI::RESET << "Supply: Provider Records" << std::endl;
             }
             if (currentRole == "Admin" || currentRole == "Sales Staff") {
-                std::cout << UI::BOLD << "  5. " << UI::RESET << "Create POS Transaction (Order)" << std::endl;
+                std::cout << UI::BOLD << "  5. " << UI::RESET << "POS: Process Transaction" << std::endl;
+            }
+            if (currentRole == "Admin") {
+                std::cout << UI::BOLD << "  6. " << UI::RESET << UI::GREEN << "Finance: Analytics Report" << UI::RESET << std::endl;
+                std::cout << UI::BOLD << "  7. " << UI::RESET << UI::CYAN << "Arrival: New Product Entry" << UI::RESET << std::endl;
             }
 
-            std::cout << UI::BOLD << "  0. " << UI::RESET << UI::RED << "Logout Session" << UI::RESET << std::endl;
+            std::cout << UI::BOLD << "  0. " << UI::RESET << UI::RED << "End Secure Session" << UI::RESET << std::endl;
 
-            int choice = InputValidator::getInteger("\n  Select Menu Action: ", 0, 5);
+            int choice = InputValidator::getInteger("\n  Execute Action ID: ", 0, 7);
             if (choice == 0) break;
 
             handleAction(choice);
@@ -94,14 +109,41 @@ private:
                 else UI::printError("Access restricted to Admins only!");
                 pause();
                 break;
+            case 4:
+                if (currentRole == "Admin") invMgr.displayProviders();
+                else UI::printError("Access restricted!");
+                pause();
+                break;
             case 5:
                 processSale();
+                pause();
+                break;
+            case 6:
+                if (currentRole == "Admin") ordProc.displayFinanceReport();
+                else UI::printError("Access Restricted!");
+                pause();
+                break;
+            case 7:
+                if (currentRole == "Admin") registerProduct();
+                else UI::printError("Access Restricted!");
                 pause();
                 break;
             default:
                 UI::printInfo("Feature coming soon in full release!");
                 pause();
         }
+    }
+
+    void registerProduct() {
+        UI::clearScreen();
+        UI::printHeader("NEW PRODUCT ENTRY");
+        int pID = 100 + invMgr.getProducts().size() + 1;
+        std::string name = InputValidator::getString("  Product Name: ");
+        std::string desc = InputValidator::getString("  Description:  ");
+        double price = InputValidator::getInteger("  Price ($):    ", 1, 100000);
+        int initialStock = InputValidator::getInteger("  Initial Stock:", 1, 1000);
+        
+        invMgr.registerNewProduct(pID, name, desc, price, initialStock, 1);
     }
 
     void pause() {

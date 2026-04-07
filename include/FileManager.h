@@ -39,7 +39,7 @@ public:
         }
         std::string line;
         while (std::getline(file, line)) {
-            if (!line.empty()) {
+            if (!line.empty() && line.find_first_not_of(" \t\n\r") != std::string::npos) {
                 lines.push_back(line);
             }
         }

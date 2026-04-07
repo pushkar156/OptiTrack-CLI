@@ -15,6 +15,7 @@ private:
     std::vector<std::unique_ptr<Product>> products;
     std::vector<std::unique_ptr<Stocks>> stocks;
     std::vector<std::unique_ptr<Warehouse>> warehouses;
+    std::vector<std::unique_ptr<Provider>> providers;
 
 public:
     InventoryManager() { loadAllData(); }
@@ -24,6 +25,19 @@ public:
     void addProduct(std::unique_ptr<Product> product) {
         products.push_back(std::move(product));
         saveAllData();
+    }
+
+    void registerNewProduct(int pID, std::string name, std::string desc, double price, int initialStock, int warehouseID) {
+        // 1. Create Product
+        auto newP = std::make_unique<Product>(pID, name, desc, price, initialStock);
+        products.push_back(std::move(newP));
+        
+        // 2. Create Stock Record
+        int nextStockID = 100 + stocks.size();
+        stocks.push_back(std::make_unique<Stocks>(nextStockID, pID, warehouseID, initialStock));
+        
+        saveAllData();
+        UI::printSuccess("Product Registration Complete: " + name);
     }
 
     Product* findProductByID(int id) {
@@ -50,10 +64,25 @@ public:
 
     const auto& getProducts() const { return products; }
 
+    void displayProviders() {
+        UI::clearScreen();
+        UI::printHeader("ACTIVE SUPPLY CHAIN: PROVIDERS");
+        std::cout << UI::BOLD << "| ID   | SUPPLIER ID | PRODUCT ID | STATUS        |" << UI::RESET << std::endl;
+        std::cout << "----------------------------------------------------" << std::endl;
+        for (const auto& p : providers) {
+            std::cout << "| " << std::left << std::setw(5) << p->getID() << "| " 
+                      << std::setw(12) << p->getSupplierID() << "| " 
+                      << std::setw(11) << p->getProductID() << "| " 
+                      << std::setw(14) << "ACTIVE" << " |" << std::endl;
+        }
+        std::cout << "----------------------------------------------------" << std::endl;
+    }
+
     // CRUD Loading & Saving
     void loadAllData() {
         products.clear();
         stocks.clear();
+        providers.clear();
 
         // Load Products & Perishables
         auto pLines = FileManager::loadFromFile("Product.csv");
@@ -81,6 +110,12 @@ public:
             Product* p = findProductByID(sRec->getProductID());
             if (p) p->setStock(p->getStock() + sRec->getCount());
             stocks.push_back(std::move(sRec));
+        }
+
+        // Load Providers
+        auto prLines = FileManager::loadFromFile("Provider.csv");
+        for (const auto& line : prLines) {
+            providers.push_back(std::make_unique<Provider>(Provider::fromCSV(line)));
         }
         
         UI::printInfo("System loaded " + std::to_string(products.size()) + " products and synced " + std::to_string(stocks.size()) + " locations.");

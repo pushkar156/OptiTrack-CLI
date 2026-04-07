@@ -13,6 +13,12 @@ public:
     Order(int id, std::string date, int pID, int qty, double pr) 
         : id(id), orderDate(date), productID(pID), quantity(qty), price(pr) {}
 
+    int getId() const { return id; }
+    std::string getDate() const { return orderDate; }
+    int getProductID() const { return productID; }
+    int getQuantity() const { return quantity; }
+    double getPrice() const { return price; }
+
     double calculateTotal() const {
         return quantity * price;
     }

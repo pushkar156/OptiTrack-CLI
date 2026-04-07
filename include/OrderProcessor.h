@@ -56,6 +56,34 @@ public:
         UI::printInfo("Loaded " + std::to_string(orderHistory.size()) + " previous transactions.");
     }
 
+    void displayFinanceReport() {
+        UI::clearScreen();
+        UI::printHeader("FINANCIAL PERFORMANCE REPORT");
+        
+        double totalRevenue = 0.0;
+        int totalUnits = 0;
+
+        std::cout << UI::BOLD << "| ID   | DATE       | PROD ID | QTY | TOTAL AMT  |" << UI::RESET << std::endl;
+        std::cout << "----------------------------------------------------" << std::endl;
+        
+        for (const auto& o : orderHistory) {
+            double amount = o->calculateTotal();
+            totalRevenue += amount;
+            totalUnits += o->getQuantity();
+            
+            std::cout << "| " << std::left << std::setw(5) << o->getId() << "| " 
+                      << std::setw(11) << o->getDate() << "| " 
+                      << std::setw(8) << o->getProductID() << "| " 
+                      << std::setw(4) << o->getQuantity() << "| $" 
+                      << std::setw(10) << std::fixed << std::setprecision(2) << amount << " |" << std::endl;
+        }
+
+        std::cout << "----------------------------------------------------" << std::endl;
+        std::cout << UI::BOLD << UI::CYAN << ">> TOTAL COMPLETED SALES: " << orderHistory.size() << UI::RESET << std::endl;
+        std::cout << UI::BOLD << UI::GREEN << ">> GROSS TOTAL REVENUE:   $" << totalRevenue << UI::RESET << std::endl;
+        std::cout << "\n  [Average Order Value: $" << (orderHistory.empty() ? 0 : totalRevenue/orderHistory.size()) << "]" << std::endl;
+    }
+
     void saveOrders() {
         std::vector<std::string> lines;
         for (const auto& o : orderHistory) lines.push_back(o->toCSV());

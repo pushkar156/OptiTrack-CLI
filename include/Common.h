@@ -30,16 +30,18 @@ namespace UI {
     }
 
     inline void printHeader(const std::string& title) {
-        std::string line(title.length() + 8, '=');
+        std::string line(42, '=');
         std::cout << BOLD << CYAN << "\n" << line << RESET << std::endl;
-        std::cout << BOLD << CYAN << "||  " << title << "  ||" << RESET << std::endl;
+        std::cout << BOLD << CYAN << " >>  " << title << "  <<" << RESET << std::endl;
         std::cout << BOLD << CYAN << line << "\n" << RESET << std::endl;
+        std::cout << std::flush;
     }
 
     inline void printBox(const std::string& msg) {
-        std::cout << BOLD << BLUE << "+----------------------------------------+" << RESET << std::endl;
-        std::cout << BOLD << BLUE << "| " << std::left << std::setw(38) << msg << " |" << RESET << std::endl;
-        std::cout << BOLD << BLUE << "+----------------------------------------+" << RESET << std::endl;
+        std::cout << BOLD << BLUE << "+------------------------------------------+" << RESET << std::endl;
+        std::cout << BOLD << BLUE << "| " << std::left << std::setw(40) << msg << " |" << RESET << std::endl;
+        std::cout << BOLD << BLUE << "+------------------------------------------+" << RESET << std::endl;
+        std::cout << std::flush;
     }
 
     inline void printSuccess(const std::string& msg) {
