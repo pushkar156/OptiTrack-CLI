@@ -72,9 +72,9 @@ private:
             // RBAC logic for menu options
             if (currentRole == "Admin" || currentRole == "Warehouse Manager") {
                 std::cout << UI::BOLD << "  2. " << UI::RESET << "Logistics: Update Stock" << std::endl;
+                std::cout << UI::BOLD << "  3. " << UI::RESET << "Warehouse: Low Stock Sentinel" << std::endl;
             }
             if (currentRole == "Admin") {
-                std::cout << UI::BOLD << "  3. " << UI::RESET << "HR: Staff Hierarchy" << std::endl;
                 std::cout << UI::BOLD << "  4. " << UI::RESET << "Supply: Provider Records" << std::endl;
             }
             if (currentRole == "Admin" || currentRole == "Sales Staff") {
@@ -83,11 +83,12 @@ private:
             if (currentRole == "Admin") {
                 std::cout << UI::BOLD << "  6. " << UI::RESET << "Finance: Analytics Report" << std::endl;
                 std::cout << UI::BOLD << "  7. " << UI::RESET << "Arrival: New Product Entry" << std::endl;
+                std::cout << UI::BOLD << "  8. " << UI::RESET << "HR: Staff Hierarchy" << std::endl;
             }
 
             std::cout << UI::BOLD << "  0. " << UI::RESET << UI::RED << "End Secure Session" << UI::RESET << std::endl;
 
-            int choice = InputValidator::getInteger("\n  Execute Action ID: ", 0, 7);
+            int choice = InputValidator::getInteger("\n  Execute Action ID: ", 0, 8);
             if (choice == 0) break;
 
             handleAction(choice);
@@ -105,8 +106,7 @@ private:
                 pause();
                 break;
             case 3:
-                if (currentRole == "Admin") staffMgr.displayAll();
-                else UI::printError("Access restricted to Admins only!");
+                invMgr.displayLowStockAlerts();
                 pause();
                 break;
             case 4:
@@ -126,6 +126,11 @@ private:
             case 7:
                 if (currentRole == "Admin") registerProduct();
                 else UI::printError("Access Restricted!");
+                pause();
+                break;
+            case 8:
+                if (currentRole == "Admin") staffMgr.displayAll();
+                else UI::printError("Access restricted!");
                 pause();
                 break;
             default:

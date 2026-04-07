@@ -64,6 +64,29 @@ public:
 
     const auto& getProducts() const { return products; }
 
+    void displayLowStockAlerts() {
+        UI::clearScreen();
+        UI::printHeader("CRITICAL STOCK ALERTS");
+        std::cout << UI::BOLD << UI::RED << "| ID   | NAME                 | STOCK | STATUS        |" << UI::RESET << std::endl;
+        std::cout << "-------------------------------------------------------" << std::endl;
+        
+        bool alertFound = false;
+        for (const auto& p : products) {
+            if (p->getStock() < 10) {
+                std::cout << "| " << std::left << std::setw(5) << p->getId() << "| " 
+                          << std::setw(21) << p->getName() << "| " 
+                          << UI::RED << std::setw(6) << p->getStock() << UI::RESET << "| " 
+                          << std::setw(14) << "REPLENISH" << " |" << std::endl;
+                alertFound = true;
+            }
+        }
+
+        if (!alertFound) {
+            UI::printSuccess("System Audit: All stock levels are within healthy thresholds.");
+        }
+        std::cout << "-------------------------------------------------------" << std::endl;
+    }
+
     void displayProviders() {
         UI::clearScreen();
         UI::printHeader("ACTIVE SUPPLY CHAIN: PROVIDERS");
