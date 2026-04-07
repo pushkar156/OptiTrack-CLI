@@ -67,28 +67,34 @@ private:
             
             UI::printHeader(currentRole + " Main Menu");
             UI::printBox("ACTIVE DATA SECTIONS");
+            // Sequential Menu Display
             std::cout << UI::BOLD << "  1. " << UI::RESET << "Open Stock Inventory" << std::endl;
-            
-            // RBAC logic for menu options
-            if (currentRole == "Admin" || currentRole == "Warehouse Manager") {
-                std::cout << UI::BOLD << "  2. " << UI::RESET << "Logistics: Update Stock" << std::endl;
-                std::cout << UI::BOLD << "  3. " << UI::RESET << "Warehouse: Low Stock Sentinel" << std::endl;
-            }
-            if (currentRole == "Admin") {
-                std::cout << UI::BOLD << "  4. " << UI::RESET << "Supply: Provider Records" << std::endl;
-            }
-            if (currentRole == "Admin" || currentRole == "Sales Staff") {
-                std::cout << UI::BOLD << "  5. " << UI::RESET << "POS: Process Transaction" << std::endl;
-            }
-            if (currentRole == "Admin") {
-                std::cout << UI::BOLD << "  6. " << UI::RESET << "Finance: Analytics Report" << std::endl;
-                std::cout << UI::BOLD << "  7. " << UI::RESET << "Arrival: New Product Entry" << std::endl;
-                std::cout << UI::BOLD << "  8. " << UI::RESET << "HR: Staff Hierarchy" << std::endl;
+
+            if (currentRole == "Sales Staff") {
+                std::cout << UI::BOLD << "  2. " << UI::RESET << "POS: Catalog Look-up" << std::endl;
+                std::cout << UI::BOLD << "  3. " << UI::RESET << "POS: Process Transaction" << std::endl;
+            } 
+            else {
+                if (currentRole == "Admin") {
+                    std::cout << UI::BOLD << "  2. " << UI::RESET << "POS: Catalog Look-up" << std::endl;
+                }
+                if (currentRole == "Admin" || currentRole == "Warehouse Manager") {
+                    std::cout << UI::BOLD << "  3. " << UI::RESET << "Logistics: Update Stock" << std::endl;
+                    std::cout << UI::BOLD << "  4. " << UI::RESET << "Warehouse: Low Stock Sentinel" << std::endl;
+                }
+                if (currentRole == "Admin") {
+                    std::cout << UI::BOLD << "  5. " << UI::RESET << "Supply: Provider Records" << std::endl;
+                    std::cout << UI::BOLD << "  6. " << UI::RESET << "POS: Process Transaction" << std::endl;
+                    std::cout << UI::BOLD << "  7. " << UI::RESET << "Finance: Analytics Report" << std::endl;
+                    std::cout << UI::BOLD << "  8. " << UI::RESET << "Arrival: New Product Entry" << std::endl;
+                    std::cout << UI::BOLD << "  9. " << UI::RESET << "HR: Staff Hierarchy" << std::endl;
+                }
             }
 
             std::cout << UI::BOLD << "  0. " << UI::RESET << UI::RED << "End Secure Session" << UI::RESET << std::endl;
 
-            int choice = InputValidator::getInteger("\n  Execute Action ID: ", 0, 8);
+            int maxChoice = (currentRole == "Sales Staff") ? 3 : 9;
+            int choice = InputValidator::getInteger("\n  Execute Action ID: ", 0, maxChoice);
             if (choice == 0) break;
 
             handleAction(choice);
@@ -96,39 +102,49 @@ private:
     }
 
     void handleAction(int choice) {
+        // Smart Routing for Sales Staff
+        if (currentRole == "Sales Staff" && choice == 3) choice = 6;
+
         switch (choice) {
             case 1:
                 displayInventory();
                 break; // displayInventory has its own pause
             case 2:
+                {
+                    std::string query = InputValidator::getString("\n  Enter Name or ID to Find: ");
+                    invMgr.searchProducts(query);
+                    pause();
+                }
+                break;
+            case 3:
                 if (currentRole != "Sales Staff") updateStock();
                 else UI::printError("Access Denied for Sales Staff!");
                 pause();
                 break;
-            case 3:
+            case 4:
                 invMgr.displayLowStockAlerts();
                 pause();
                 break;
-            case 4:
+            case 5:
                 if (currentRole == "Admin") invMgr.displayProviders();
                 else UI::printError("Access restricted!");
                 pause();
                 break;
-            case 5:
+            case 6:
                 processSale();
                 pause();
                 break;
-            case 6:
+            case 7:
                 if (currentRole == "Admin") ordProc.displayFinanceReport();
                 else UI::printError("Access Restricted!");
                 pause();
                 break;
-            case 7:
+            case 8:
                 if (currentRole == "Admin") registerProduct();
                 else UI::printError("Access Restricted!");
                 pause();
                 break;
-            case 8:
+            case 9:
                 if (currentRole == "Admin") staffMgr.displayAll();
                 else UI::printError("Access restricted!");
                 pause();

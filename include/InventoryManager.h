@@ -87,6 +87,29 @@ public:
         std::cout << "-------------------------------------------------------" << std::endl;
     }
 
+    void searchProducts(const std::string& query) {
+        UI::clearScreen();
+        UI::printHeader("CATALOG SEARCH: " + query);
+        std::cout << UI::BOLD << "| ID   | NAME                 | STOCK | PRICE ($)  | DESCRIPTION                    |" << UI::RESET << std::endl;
+        std::cout << "-------------------------------------------------------------------------------------" << std::endl;
+        
+        bool found = false;
+        for (const auto& p : products) {
+            // Check ID or Name Match
+            bool matches = (p->getName().find(query) != std::string::npos);
+            try { if (std::to_string(p->getId()) == query) matches = true; } catch(...) {}
+
+            if (matches) {
+                std::cout << UI::BLUE << "| " << UI::RESET;
+                p->displayDetails();
+                found = true;
+            }
+        }
+
+        if (!found) UI::printError("No matching records found for: " + query);
+        std::cout << "-------------------------------------------------------------------------------------" << std::endl;
+    }
+
     void displayProviders() {
         UI::clearScreen();
         UI::printHeader("ACTIVE SUPPLY CHAIN: PROVIDERS");
